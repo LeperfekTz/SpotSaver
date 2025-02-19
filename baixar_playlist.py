@@ -5,11 +5,13 @@ import subprocess
 def baixar_playlist(playlist_url, pasta_destino, log_container, page):
     if not playlist_url:
         log_container.controls.append(ft.Text("Por favor, insira um link válido!", color="red"))
+        ajustar_tamanho_janela(page, log_container)
         page.update()
         return
     
     if not pasta_destino:
         log_container.controls.append(ft.Text("Por favor, selecione uma pasta de destino!", color="red"))
+        ajustar_tamanho_janela(page, log_container)
         page.update()
         return
     
@@ -20,6 +22,7 @@ def baixar_playlist(playlist_url, pasta_destino, log_container, page):
     comando = ["spotdl", playlist_url, "--output", pasta_destino, "--log-level", "INFO"]
     
     log_container.controls.append(ft.Text("Baixando... Aguarde!", color="blue"))
+    ajustar_tamanho_janela(page, log_container)
     page.update()
     
     try:
@@ -36,13 +39,16 @@ def baixar_playlist(playlist_url, pasta_destino, log_container, page):
         # Lê a saída do comando em tempo real
         for line in process.stdout:
             log_container.controls.append(ft.Text(line.strip(), color="white"))
-            page.update()  # Atualiza a interface
+            ajustar_tamanho_janela(page, log_container)
+            page.update()
         
         process.wait()  # Aguarda o término do processo
         log_container.controls.append(ft.Text("Download concluído!", color="green"))
+        ajustar_tamanho_janela(page, log_container)
         page.update()
     except Exception as e:
         log_container.controls.append(ft.Text(f"Erro durante o download: {e}", color="red"))
+        ajustar_tamanho_janela(page, log_container)
         page.update()
 
 def selecionar_pasta(dialog, pasta_destino_text, page):
@@ -53,11 +59,17 @@ def selecionar_pasta(dialog, pasta_destino_text, page):
     dialog.on_result = on_result
     dialog.get_directory_path()
 
+def ajustar_tamanho_janela(page, log_container):
+    """ Ajusta a altura da janela conforme o log cresce """
+    nova_altura = 300 + (len(log_container.controls) * 20)  # Expande conforme as mensagens aparecem
+    page.window.height = min(nova_altura, 700)  # Limita a altura máxima em 700px
+    page.update()
+
 def main(page: ft.Page):
     page.title = "SpotSaver App"
-    page.window.width = 600
-    page.window.height = 600
-    page.window.resizable = False
+    page.window.width = 500
+    page.window.height = 300
+    page.window.resizable = True  # Permite ajuste automático
     page.window.maximizable = False
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     
