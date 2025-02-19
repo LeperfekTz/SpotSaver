@@ -67,15 +67,33 @@ def ajustar_tamanho_janela(page, log_container):
 
 def main(page: ft.Page):
     page.title = "SpotSaver App"
+    page.bgcolor = "ft.Colors.GREY_800"
     page.window.width = 500
     page.window.height = 300
-    page.window.resizable = True  # Permite ajuste automático
+    page.window.resizable = True  # Permite ajuste automático 
     page.window.maximizable = False
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     
-    link_input = ft.TextField(label="Cole o link da playlist do Spotify", width=400)
-    pasta_destino_text = ft.TextField(label="Pasta de destino", width=400, read_only=True)
-    
+    link_input = ft.TextField(
+        label="Cole o link da playlist do Spotify",
+        label_style=ft.TextStyle(color="white"),
+        focused_border_color="red",
+        border_color="red",
+        width=400,
+        color="white",
+    )
+    pasta_destino_text = ft.TextField(
+        label="Pasta de destino",
+        label_style=ft.TextStyle(color="white"),
+        cursor_color="red",
+        border_color="red",
+        width=400,
+        read_only=True,
+        color="ft.Colors.GREY_900",
+        hint_text="Selecione a pasta de destino no botão abaixo",
+        hint_style=ft.TextStyle(color="ft.Colors.GREY_900")  # Mude a cor do texto de dica aqui
+    )   
+
     # ListView para exibir o log
     log_container = ft.ListView(
         width=400,
@@ -83,10 +101,9 @@ def main(page: ft.Page):
         spacing=5,
         auto_scroll=True  # Rola automaticamente para o final
     )
-    
     file_picker = ft.FilePicker()
-    selecionar_pasta_button = ft.ElevatedButton("Selecionar Pasta", on_click=lambda _: selecionar_pasta(file_picker, pasta_destino_text, page))
-    download_button = ft.ElevatedButton("Baixar Playlist", on_click=lambda _: baixar_playlist(link_input.value, pasta_destino_text.value, log_container, page))
+    download_button = ft.ElevatedButton("Baixar Playlist",bgcolor="black",color="white", on_click=lambda _: baixar_playlist(link_input.value, pasta_destino_text.value, log_container, page))
+    selecionar_pasta_button = ft.ElevatedButton("Selecionar Pasta",bgcolor="black",color="white", on_click=lambda _: selecionar_pasta(file_picker, pasta_destino_text, page))
     
     page.overlay.append(file_picker)
     page.add(
